@@ -4,7 +4,7 @@ using LinearAlgebra, Gurobi
 include("./accp.jl")
 include("./utils.jl")
 
-export completely_positive_cut, is_completely_positive, iscopositive, CopositiveChecker
+export completely_positive_cut, is_completely_positive, testcopositive, CopositiveChecker
 
 """
     CopositiveChecker(sd::Int)
@@ -59,13 +59,13 @@ mutable struct CopositiveChecker
     end
 end
 """
-    iscopositive(A::AbstractMatrix, cc::CopositiveChecker; maxcoef=2^32)
+    testcopositive(A::AbstractMatrix, cc::CopositiveChecker; maxcoef=2^32)
 Set up the CopositiveChecker `cc` to check `A`, and call `optimize_copositive!`.
 If any coefficient exceeds `maxcoef`, the matrix is scaled first.
 
 See also: [`CopositiveChecker`](@ref), [`optimize_copositive!`](@ref)
 """
-function iscopositive(A::AbstractMatrix, cc::CopositiveChecker; maxcoef=2^32)
+function testcopositive(A::AbstractMatrix, cc::CopositiveChecker; maxcoef=2^32)
     M = maximum(abs.(A))
     if M > maxcoef
         A *= maxcoef/M
@@ -80,10 +80,10 @@ function iscopositive(A::AbstractMatrix, cc::CopositiveChecker; maxcoef=2^32)
     end
     return optimize_copositive!(cc)
 end
-function iscopositive(A::AbstractArray{T,2}) where T
+function testcopositive(A::AbstractArray{T,2}) where T
     @assert issymmetric(A)
     cc = CopositiveChecker(size(A,1))
-    return iscopositive(A, cc)
+    return testcopositive(A, cc)
 end
 
 struct CopositiveStatusError <: Exception
@@ -209,7 +209,7 @@ useaccp=true)
     obj = vec2matadj(A)
     cc = CopositiveChecker(size(A,1))
     function oracle(y::AbstractVector)
-        val, x = iscopositive(vec2mat(y), cc)
+        val, x = testcopositive(vec2mat(y), cc)
         return val < 0 ? Halfspace(vec2matadj(-x*x'), 0.) : true
     end
 
