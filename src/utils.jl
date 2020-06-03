@@ -106,7 +106,7 @@ function vec2matinv(M::Union{SparseMatrixCSC{Tv,Ti}, Array{Tv,2}, Symmetric{Tv,T
     sd = size(M,1)
     vecsize = sd * (sd+1) ÷ 2
     v = if M isa SparseMatrixCSC spzeros(vecsize)
-    elseif M isa Array zeros(vecsize)
+    elseif M isa Array zeros(Tv, vecsize)
     else Array{Tv,1}(undef, vecsize)
     end
     total = 0
