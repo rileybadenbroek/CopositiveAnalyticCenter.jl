@@ -1,29 +1,29 @@
 # CopositiveAnalyticCenter.jl
 
-Solves problems of the form: 
+Solves problems of the form:
 ```
 minimize    dot(obj, x)
 subject to  norm(x) ≤ r
             oracle(x) == true,
 ```
-where `obj` is an `AbstractVector`, and `oracle` tests membership of some convex body. The main workhorse is the `accp` function, 
+where `obj` is an `AbstractVector`, and `oracle` tests membership of some convex body. The main workhorse is the `accp` function,
 which solves this problem using an Analytic Center Cutting Plane method. It yields a near-optimal vector `x`.
 
-For some vector `x`, `oracle(x)` should return `true` if `x` lies in the feasible set, or else a `Halfspace` containing the feasible 
+For some vector `x`, `oracle(x)` should return `true` if `x` lies in the feasible set, or else a `Halfspace` containing the feasible
 set but not `x`. `Halfspace(slope, constant)` denotes the set `{z: dot(slope, z) ≤ constant}`.
 
 ## Testing copositivity
-The package provides the `testcopositive` function, which may be used in defining your `oracle`. For some symmetric matrix `A`, 
+The package provides the `testcopositive` function, which may be used in defining your `oracle`. For some symmetric matrix `A`,
 `testcopositive(A)` returns a `Tuple` containing the optimal value and optimal solution to
 ```
 minimize    y' * A * y
 subject to  sum(y) = 1
             y ≥ 0.
 ```
-This function (currently) requires [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl). 
+This function (currently) requires [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl).
 
-To avoid having to set up the problem above from scratch every time `testcopositive` is called, 
-you can create a `CopositiveChecker` instance `cc`, e.g. `cc = CopositiveChecker(10);` to set up an environment for testing 10-by-10 
+To avoid having to set up the problem above from scratch every time `testcopositive` is called,
+you can create a `CopositiveChecker` instance `cc`, e.g. `cc = CopositiveChecker(10);` to set up an environment for testing 10-by-10
 matrices. To test the 10-by-10 matrix `A` for copositivity using `cc`, call `testcopositive(A, cc)`.
 
 ## Transforming vectors to symmetric matrices
@@ -93,7 +93,9 @@ function test_completely_positive(A)
     end
     r = 1.
     x = accp(obj, oracle, r)
-    # If 0 ≤ dot(obj, x) = dot(A, X), then A is completely positive
-    return dot(obj, x) >= 0
+    return vec2mat(x)
 end
 ```
+The package ships with the function `completely_positive_cut` which does the same thing as `test_completely_positive` above.
+
+Users interested in a yes-no answer to the question if `A` is completely positive can call `is_completely_positive(A)`.
