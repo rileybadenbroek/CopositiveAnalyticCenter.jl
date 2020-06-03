@@ -2,7 +2,7 @@ using LinearAlgebra
 using JuMP, Gurobi
 using Printf
 
-export accp
+export accp, Halfspace
 
 """
     Halfspace(slope, constant)
