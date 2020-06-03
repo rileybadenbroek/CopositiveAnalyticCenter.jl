@@ -60,6 +60,8 @@ julia> vec2matadj(M)
  4
  3
 
+julia> using LinearAlgebra: dot
+
 julia> dot(vec2matadj(M), [0, 1, 0]) == dot(M, vec2mat([0, 1, 0]))
 true
 ```

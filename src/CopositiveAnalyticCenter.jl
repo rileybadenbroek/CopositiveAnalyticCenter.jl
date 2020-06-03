@@ -4,7 +4,7 @@ using LinearAlgebra, Gurobi
 include("./accp.jl")
 include("./utils.jl")
 
-export completely_positive_cut, is_completely_positive, iscopositive
+export completely_positive_cut, is_completely_positive, iscopositive, CopositiveChecker
 
 """
     CopositiveChecker(sd::Int)
@@ -192,10 +192,16 @@ function is_completely_positive(A::AbstractMatrix)
 end
 
 """
-    completely_positive_cut(A; verbose=true, trackcalls=false, useaccp=true)
+    completely_positive_cut(A)
 Compute a copositive matrix `X` that approximately minimizes `dot(A,X)` subject
-to the condition `norm(vec2matinv(X)) ≤ 1`. If `useaccp` is `true`, uses an
-analytic center cutting plane method, otherwise an ellipsoid method.
+to the condition `norm(vec2matinv(X)) ≤ 1`.
+# Arguments
+- `useaccp=true`: uses an analytic center cutting plane method, otherwise an
+  ellipsoid method.
+- `verbose=true`: display output. If the analytic center computation fails, this
+  includes the spectrum of the matrix in the linear system that should be solved.
+- `trackcalls=false`: the method returns `(X, calls)` when `trackcalls==true`,
+  where `calls` is the number of calls to `oracle`.
 """
 function completely_positive_cut(A::AbstractMatrix; verbose=true, trackcalls=false,
 useaccp=true)
