@@ -1,5 +1,11 @@
 module CopositiveAnalyticCenter
 
+if haskey(ENV, "GITHUB_ACTIONS")
+    println("Looks like a GitHub action. I'm exiting to prevent " *
+    "errors saying Gurobi is not installed.")
+    exit(0)
+end
+
 using LinearAlgebra, Gurobi
 include("./accp.jl")
 include("./utils.jl")
