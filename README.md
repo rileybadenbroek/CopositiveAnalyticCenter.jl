@@ -1,5 +1,4 @@
 # CopositiveAnalyticCenter.jl
-
 Solves problems of the form:
 ```
 minimize    dot(obj, x)
@@ -12,6 +11,12 @@ which solves this problem using an Analytic Center Cutting Plane method. It yiel
 For some vector `x`, `oracle(x)` should return `true` if `x` lies in the feasible set, or else a `Halfspace` containing the feasible
 set but not `x`. `Halfspace(slope, constant)` denotes the set `{z: dot(slope, z) ≤ constant}`.
 
+## Installation
+This package (currently) requires [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl). Once this is set up, run
+```julia
+julia> import Pkg; Pkg.add("CopositiveAnalyticCenter")
+```
+
 ## Testing copositivity
 The package provides the `testcopositive` function, which may be used in defining your `oracle`. For some symmetric matrix `A`,
 `testcopositive(A)` returns a `Tuple` containing the optimal value and optimal solution to
@@ -20,7 +25,6 @@ minimize    y' * A * y
 subject to  sum(y) = 1
             y ≥ 0.
 ```
-This function (currently) requires [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl).
 
 To avoid having to set up the problem above from scratch every time `testcopositive` is called,
 you can create a `CopositiveChecker` instance `cc`, e.g. `cc = CopositiveChecker(10);` to set up an environment for testing 10-by-10
@@ -96,6 +100,6 @@ function test_completely_positive(A)
     return vec2mat(x)
 end
 ```
-The package ships with the function `completely_positive_cut` which does the same thing as `test_completely_positive` above.
+The package ships with the function `completely_positive_cut` which does the same thing as `test_completely_positive` above, but with some additional options.
 
 Users interested in a yes-no answer to the question if `A` is completely positive can call `is_completely_positive(A)`.
