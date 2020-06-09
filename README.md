@@ -14,7 +14,7 @@ set but not `x`. `Halfspace(slope, constant)` denotes the set `{z: dot(slope, z)
 ## Installation
 This package (currently) requires [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl). Once this is set up, run
 ```julia
-julia> import Pkg; Pkg.add("CopositiveAnalyticCenter")
+julia> import Pkg; Pkg.add("https://github.com/rileybadenbroek/CopositiveAnalyticCenter.jl")
 ```
 
 ## Testing copositivity
