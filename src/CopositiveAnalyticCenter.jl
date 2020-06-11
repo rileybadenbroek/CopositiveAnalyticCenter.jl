@@ -1,12 +1,18 @@
 module CopositiveAnalyticCenter
 
-# if haskey(ENV, "GITHUB_ACTIONS")
-#     println("Looks like a GitHub action. I'm exiting to prevent " *
-#     "errors saying Gurobi is not installed.")
-#     exit(0)
-# end
+using LinearAlgebra
 
-using LinearAlgebra, Gurobi
+const solver = open(f->read(f, String), joinpath(@__DIR__, "..", "deps", "USESOLVER"))
+if solver == "Gurobi"
+    using Gurobi
+    const SOCPsolver = Gurobi
+    const MIPsolver = Gurobi
+else
+    using ECOS, Cbc
+    const SOCPsolver = ECOS
+    const MIPsolver = Cbc
+end
+
 include("./accp.jl")
 include("./utils.jl")
 
@@ -49,8 +55,11 @@ mutable struct CopositiveChecker
     λ_RHS_const
     λ
     function CopositiveChecker(sd::Int)
-        model = Model(optimizer_with_attributes(Gurobi.Optimizer,
-            "OutputFlag"=>0, "NumericFocus"=>3))
+        model = Model(MIPsolver.Optimizer)
+        set_silent(model)
+        if solver == "Gurobi"
+            set_optimizer_attribute(model, "NumericFocus", 3)
+        end
         @variable(model, x[1:sd] >= 0)
         @variable(model, μ)
         @variable(model, λ[1:sd] >= 0)

@@ -1,5 +1,5 @@
 using LinearAlgebra
-using JuMP, Gurobi
+using JuMP
 using Printf
 
 export accp, Halfspace
@@ -23,7 +23,8 @@ mutable struct OuterApproximation
     function OuterApproximation(obj::AbstractVector, A::AbstractMatrix,
     b::AbstractVector, r::Number)
         n = length(obj)
-        model = Model(optimizer_with_attributes(Gurobi.Optimizer, "OutputFlag"=>0))
+        model = Model(SOCPsolver.Optimizer)
+        set_silent(model)
         @variable(model, x[1:n])
         @constraint(model, vcat(r, x) in SecondOrderCone())
         cutrefs = @constraint(model, A * x .<= b)

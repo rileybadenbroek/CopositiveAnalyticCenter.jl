@@ -11,11 +11,15 @@ which solves this problem using an Analytic Center Cutting Plane method. It yiel
 For some vector `x`, `oracle(x)` should return `true` if `x` lies in the feasible set, or else a `Halfspace` containing the feasible
 set but not `x`. `Halfspace(slope, constant)` denotes the set `{z: dot(slope, z) ≤ constant}`.
 
+For background information on this algorithm, see [this preprint](https://arxiv.org/abs/2006.05319).
+
 ## Installation
-This package (currently) requires [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl). Once this is set up, run
+Simply run
 ```julia
 julia> import Pkg; Pkg.add("https://github.com/rileybadenbroek/CopositiveAnalyticCenter.jl")
 ```
+This package will test if [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl) is installed properly.
+If not, [ECOS.jl](https://github.com/JuliaOpt/ECOS.jl) and [Cbc.jl](https://github.com/JuliaOpt/Cbc.jl) will be installed.
 
 ## Testing copositivity
 The package provides the `testcopositive` function, which may be used in defining your `oracle`. For some symmetric matrix `A`,
