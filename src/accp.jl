@@ -84,7 +84,7 @@ x0::AbstractVector=zeros(length(obj)); opttol=1e-6, maxcons=3, verbose=true, tra
         end
         A = [nobj';]
         b = [dot(nobj, x)]
-        best_sol = x
+        best_sol = copy(x)
         best_val = dot(obj, x)
     end
     trackcalls && (oraclecalls = 1)
@@ -112,7 +112,7 @@ x0::AbstractVector=zeros(length(obj)); opttol=1e-6, maxcons=3, verbose=true, tra
             addcut!(oa, result)
         else
             # If the current point is feasible, tighten the objective constraint
-            best_sol = x
+            best_sol = copy(x)
             best_val = dot(obj, x)
             A = [A; nobj']
             b = [b; dot(nobj, x)]
