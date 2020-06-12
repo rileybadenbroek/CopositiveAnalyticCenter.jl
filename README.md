@@ -16,7 +16,7 @@ For background information on this algorithm, see [this preprint](https://arxiv.
 ## Installation
 Simply run
 ```julia
-julia> import Pkg; Pkg.add("https://github.com/rileybadenbroek/CopositiveAnalyticCenter.jl")
+julia> import Pkg; Pkg.add("CopositiveAnalyticCenter")
 ```
 This package will test if [Gurobi.jl](https://github.com/JuliaOpt/Gurobi.jl) is installed properly.
 If not, [ECOS.jl](https://github.com/JuliaOpt/ECOS.jl) and [Cbc.jl](https://github.com/JuliaOpt/Cbc.jl) will be installed.
