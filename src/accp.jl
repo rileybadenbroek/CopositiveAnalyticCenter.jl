@@ -12,8 +12,11 @@ normalized.
 struct Halfspace{Ts<:AbstractVector,Tc<:Number}
     slope::Ts
     constant::Tc
-    Halfspace(slope, constant) = new{typeof(slope),typeof(constant)}(
-        slope/norm(slope), constant/norm(slope))
+    function Halfspace(slope, constant)
+        norm_slope = slope/norm(slope)
+        norm_constant = constant/norm(slope)
+        new{typeof(norm_slope),typeof(norm_constant)}(norm_slope, norm_constant)
+    end
 end
 
 mutable struct OuterApproximation
