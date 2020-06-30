@@ -265,6 +265,9 @@ and `oracle(x) == true`. `oracle(x)` should either return `true` or a `Halfspace
 function ellipsoid_method(obj::AbstractVector, oracle::Function, r::Number;
 opttol=1e-6, verbose=true, trackcalls=false)
     n = length(obj)
+    if n <= 1
+        error("The number of variables $n should be 2 or more.")
+    end
     nobj = obj / norm(obj)
     trackcalls && (oraclecalls = 0)
     x = zeros(n)
@@ -304,8 +307,8 @@ opttol=1e-6, verbose=true, trackcalls=false)
             # x = x + (D*a)/(sqrt(a'*D*a) * (n+1))
             # D = n^2/(n^2-1) * (D - 2 * D*a*a'*D/(a'*D*a * (n+1)))
         catch e
-            display(D)
-            display(diag(D))
+            println("Numerical error: cannot compute the next ellipsoid. "*
+            "The spectrum of the ellipsoid matrix follows.")
             display(eigen(D).values)
             rethrow(e)
         end
