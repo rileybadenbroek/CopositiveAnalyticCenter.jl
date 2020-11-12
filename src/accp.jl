@@ -59,8 +59,8 @@ Run an analytic center cutting plane method to minimize `dot(obj, x)` such that
 Returns a near-optimal solution `x` at default settings.
 # Arguments
 - `opttol=1e-6`: the maximum relative optimality gap at termination
-- `maxcons=3`: multiple of the number of variables indicating the number of
-  constraints that are kept. The default `maxcons=3` keeps `3n` constraints, where
+- `maxcons=4`: multiple of the number of variables indicating the number of
+  constraints that are kept. The default `maxcons=4` keeps `4n` constraints, where
   `n` is the number of variables.
 - `verbose=true`: display output. If the analytic center computation fails, this
   includes the spectrum of the matrix in the linear system that should be solved.
@@ -68,7 +68,7 @@ Returns a near-optimal solution `x` at default settings.
   where `calls` is the number of calls to `oracle`.
 """
 function accp(obj::AbstractVector, oracle::Function, r::Number,
-x0::AbstractVector=zeros(length(obj)); opttol=1e-6, maxcons=3, verbose=true, trackcalls=false)
+x0::AbstractVector=zeros(length(obj)); opttol=1e-6, maxcons=4, verbose=true, trackcalls=false)
     n = length(obj)
     nobj = obj / norm(obj)
     x = norm(x0) > 1 ? x0 / norm(x0) : x0
@@ -82,7 +82,7 @@ x0::AbstractVector=zeros(length(obj)); opttol=1e-6, maxcons=3, verbose=true, tra
     else
         # x is feasible. If x ≈ -obj / norm(obj), the feasible set will be
         # (almost) empty after adding a cut.
-        if x ≈ -nobj
+        if x ≈ -r*nobj
             return x
         end
         A = [nobj';]
@@ -240,7 +240,7 @@ oa::OuterApproximation, maxconabs::Int=Inf)
     η = Float64[]
     for i = 1:m
         push!(η, slack[i] / sqrt(A[i,:]' * H_inv_AT[:,i]))
-        if η[end] >= m+1
+        if η[end] >= m+2
             push!(redcons, i)
         end
     end
